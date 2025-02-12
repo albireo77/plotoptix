@@ -1,6 +1,16 @@
 Release history
 ===============
 
+`v0.18.4` - 2025-02-12
+----------------------
+
+Changed
+~~~~~~~
+
+- Reworked heuristics for the noise-balanced ray sampling.
+- `NoiseBalanced` work distribution mode is now alias to `AbsNoiseBalanced` since it turns more often practical in terms of visual result
+  and stable compute time.
+
 `v0.18.3` - 2025-01-03
 ----------------------
 
@@ -662,6 +672,7 @@ Added
 - this changelog, markdown description content type tag for PyPI
 - use [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
+.. _`v0.18.4`: https://github.com/rnd-team-dev/plotoptix/releases/tag/v0.18.4
 .. _`v0.18.3`: https://github.com/rnd-team-dev/plotoptix/releases/tag/v0.18.3
 .. _`v0.18.2`: https://github.com/rnd-team-dev/plotoptix/releases/tag/v0.18.2
 .. _`v0.18.1`: https://github.com/rnd-team-dev/plotoptix/releases/tag/v0.18.1

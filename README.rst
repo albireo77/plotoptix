@@ -79,7 +79,7 @@ System Requirements
 -------------------
 
 - a `CUDA-enabled GPU <https://developer.nvidia.com/cuda-gpus>`__ with compute capability >= 5.0;
-   - NVIDIA driver >= r555;
+   - NVIDIA driver >= r570;
 - **Python 3 64-bit**
 - Windows:
    - `FFmpeg <https://ffmpeg.org/download.html>`__ >= 7.0
