@@ -17,7 +17,7 @@ PlotOptiX
 ----------------------------------------------
 
 - Sample images created with PlotOptiX: `Behance <https://www.behance.net/RnDTeam>`__, `Instagram <https://www.instagram.com/rnd.team.studio/>`__, and `Facebook <https://www.facebook.com/rndteam>`__.
-- Join `Patreon <https://www.patreon.com/rndteam?fan_landing=true>`__ for news, release plans and hi-res content.
+- Join `Patreon <https://www.patreon.com/rndteam?fan_landing=true>`__ to support the project.
 
 PlotOptiX is a 3D `ray tracing <https://en.wikipedia.org/wiki/Ray_tracing_(graphics)>`__ package for Python, aimed at easy and aesthetic visualization
 of large datasets (and small as well). Data features can be represented in images as a position, size/thickness and color of primitives
@@ -45,7 +45,7 @@ No need to write shaders, intersection algorithms, handle 3D scene technicalitie
 
 Check `examples on GitHub <https://github.com/rnd-team-dev/plotoptix/tree/master/examples>`__ for practical code samples and `documentation pages <https://plotoptix.rnd.team>`__ for a complete API reference.
 
-PlotOptiX is a set of CUDA shaders by `R&D Team <https://rnd.team>`_ wrapped in C#/C++ libraries with a Python API. It is based on `NVIDIA OptiX 8.1 <https://developer.nvidia.com/optix>`_ framework and makes use of RTX-capable GPU's.
+PlotOptiX is a set of CUDA shaders by `R&D Team <https://rnd.team>`_ wrapped in C#/C++ libraries with a Python API. It is based on `NVIDIA OptiX 9.0 <https://developer.nvidia.com/optix>`_ framework and makes use of RTX-capable GPU's.
 
 You can quickly display data in a simple plot:
 
