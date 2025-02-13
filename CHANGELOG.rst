@@ -9,6 +9,11 @@ Changed
 
 - Moved to OptiX 9.0.
 
+Removed
+~~~~~~~
+
+- LDR denoiser based on OptiX driver (discontinued). Denoiser enum now points to DenoiserHDR. OIDN denoiser still supports LDR mode.
+
 `v0.18.4` - 2025-02-12
 ----------------------
 
@@ -16,7 +21,7 @@ Changed
 ~~~~~~~
 
 - Reworked heuristics for the noise-balanced ray sampling.
-- `NoiseBalanced` work distribution mode is now alias to `AbsNoiseBalanced` since it turns more often practical in terms of visual result
+- NoiseBalanced work distribution mode is now alias to AbsNoiseBalanced since it turns more often practical in terms of visual result
   and stable compute time.
 
 `v0.18.3` - 2025-01-03

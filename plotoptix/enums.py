@@ -826,32 +826,8 @@ class Postprocessing(Enum):
     >>> optix.add_postproc("Overlay")
     """
 
-    Denoiser = 7
-    """AI denoiser, LDR model.
-
-    This model is applied to the image after tone mapping. Image values are clamped
-    to the ``<0, 1>`` range at the denoiser input. Use appropriate exposure to scale the
-    image into that range; the gamma value should be about ``2.2`` (see :attr:`plotoptix.enums.Postprocessing.Gamma`).
-
-    Variables to configure:
-    
-    - denoiser_blend, float, amount of original image mixed with denoiser output
-      range: 0 (only denoiser output) to 1 (only original raytracing output)
-
-    - denoiser_start, uint, number of the accumulation frame after which denoiser is applied;
-      default velue is 4; see also denoiser_start in `raytracer configuration <npoptix_config.html#raytracer-configuration>`_
-
-    - denoiser_kind, int value of :class:`plotoptix.enums.DenoiserKind`, decides
-      which buffers are used as denoiser inputs
-
-    Examples
-    --------
-    >>> rt = TkOptiX()
-    >>>
-    >>> rt.set_float("denoiser_blend", 0.5)
-    >>> rt.set_uint("denoiser_start", 12)
-    >>> rt.set_int("denoiser_kind", DenoiserKind.Rgb.value)
-    >>> rt.add_postproc("Denoiser")
+    Denoiser = 8
+    """AI denoiser, same as ``DenoiserHDR`` model.
     """
 
     DenoiserHDR = 8
