@@ -1,7 +1,7 @@
 """
-With ``Beziers`` geometry you can setup all control points and segments
-can be placed independently in contrast to other curve geometries where
-all data points are connected or interpolated with a single curve.
+With ``Beziers`` geometry you can setup all control points so all
+segments are independent, in contrast to other curve geometries where
+you setup data points to be connected or interpolated with a single curve.
 
 This example shows how to:
    - create a large set of independent bezier segments
