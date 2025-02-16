@@ -68,7 +68,8 @@ def main():
     rt.set_background(0.99)                 # white background
     rt.set_ambient(0.15)                    # dim ambient light
 
-    rt.set_data("curve", pos=xyz, r=r, c=c, geom="Beziers")
+    #rt.set_data("curve", pos=xyz, r=r, c=c, geom="Beziers")
+    rt.set_data("curve", pos=xyz, r=r, c=c, geom="BezierRocaps") # much faster on long segments typically used for such hair-like objects
 
     rt.setup_camera("cam1", # cam_type="DoF",
                     eye=[-6, 4, 5], target=[0, -0.6, 0],

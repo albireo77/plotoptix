@@ -4311,7 +4311,7 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
                 if self._raise_on_error: raise ValueError(msg)
                 is_ok = False
 
-        elif geom == Geometry.BSplineQuad:
+        elif geom in [Geometry.BSplineQuad, Geometry.BSplineQuadRocaps]:
             if n_primitives < 3:
                 msg = "BSplineQuad requires at least 3 data points."
                 self._logger.error(msg)
@@ -4337,7 +4337,7 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
                 if self._raise_on_error: raise ValueError(msg)
                 is_ok = False
 
-        elif geom == Geometry.BSplineCubic:
+        elif geom in [Geometry.BSplineCubic, Geometry.BSplineCubicRocaps]:
             if n_primitives < 4:
                 msg = "BSplineCubic requires at least 4 data points."
                 self._logger.error(msg)
@@ -4350,7 +4350,7 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
                 if self._raise_on_error: raise ValueError(msg)
                 is_ok = False
 
-        elif geom == Geometry.Beziers:
+        elif geom in [Geometry.Beziers, Geometry.BezierRocaps]:
             if n_primitives < 4:
                 msg = "Bezier requires at least 4 data points."
                 self._logger.error(msg)
@@ -4363,7 +4363,7 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
                 if self._raise_on_error: raise ValueError(msg)
                 is_ok = False
 
-        elif geom == Geometry.CatmullRom:
+        elif geom in [Geometry.CatmullRom, Geometry.CatmullRomRocaps]:
             if n_primitives < 4:
                 msg = "CatmullRom requires at least 4 data points."
                 self._logger.error(msg)

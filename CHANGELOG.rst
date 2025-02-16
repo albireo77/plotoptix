@@ -4,6 +4,13 @@ Release history
 `v0.19.0` - unreleased
 ----------------------
 
+Added
+~~~~~
+
+- Roving capsules intersection mode added to curve geoms: BSplineQuadRocaps, BSplineCubicRocaps, CatmullRomRocaps, BezierRocaps,
+  significantly improving performance on a longer strand segments, see 2_beziers.py sample code. Minor improvemts on other curve
+  geom due to simplified vertex access code.
+
 Changed
 ~~~~~~~
 
