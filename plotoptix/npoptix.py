@@ -5507,7 +5507,7 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
             if not isinstance(edges, np.ndarray): edges = np.ascontiguousarray(edges, dtype=np.int32)
             if edges.dtype != np.int32: edges = np.ascontiguousarray(edges, dtype=np.int32)
             if not edges.flags['C_CONTIGUOUS']: edges = np.ascontiguousarray(edges, dtype=np.int32)
-            assert (len(edges.shape) == 2 and edges.shape[1] == 3) or (len(edges.shape) == 1 and (edges.shape[0] % 2 == 0)), "Required index shape is (n,3) or (m), where m is a multiple of 2."
+            assert (len(edges.shape) == 2 and edges.shape[1] == 2) or (len(edges.shape) == 1 and (edges.shape[0] % 2 == 0)), "Required index shape is (n,2) or (m), where m is a multiple of 2."
             edges_ptr = edges.ctypes.data
             n_edges = edges.size // 2
             #m_edges = n_edges
