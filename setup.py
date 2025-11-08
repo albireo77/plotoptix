@@ -183,7 +183,7 @@ setup(name='plotoptix',
           'Source': 'https://github.com/rnd-team-dev/plotoptix',
           },
       author='Robert Sulej, R&D Team',
-      author_email='dev@rnd.team',
+      author_email='robert.sulej@rnd.team',
       description='Data visualisation in Python based on NVIDIA OptiX ray tracing framework.',
       keywords="gpu nvidia optix ray-tracing path-tracing visualisation generative plot animation real-time",
       cmdclass={

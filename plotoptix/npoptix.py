@@ -2747,6 +2747,7 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
                      aperture_radius: float = -1,
                      aperture_fract: float = 0.15,
                      focal_scale: float = -1,
+                     swirl_scale: float = 0,
                      chroma_l: float = 0.05,
                      chroma_t: float = 0.01,
                      fov: float = -1,
@@ -2795,6 +2796,8 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
         focal_scale : float, optional
             Focusing distance, relative to ``eye - target`` length. Default `-1` is internally
             reset to `1.0`, that is focus is set at the target point.
+        swirl_scale : float, optional
+            Bokeh swirl scale. Default `0`, no swirl (circular bokeh).
         chroma_l : float, optional
             Longitudinal chromatic aberration strength, relative variation of the focusing
             distance for different wavelengths. Use be a small positive value << 1.0. Default
@@ -2844,7 +2847,9 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
 
         if up is None: up = np.ascontiguousarray([0, 1, 0], dtype=np.float32)
         if aperture_radius <= 0: aperture_radius = 0.1
-        if focal_scale <= 0: focal_scale = 1.0
+        if focal_scale <= 0.0: focal_scale = 1.0
+        if swirl_scale < -3.0: swirl_scale = -3.0
+        if swirl_scale > 3.0: swirl_scale = 3.0
         if fov <= 0: fov = 35.0
 
         if sensor_height <= 0: sensor_height = 24.0
@@ -2892,7 +2897,7 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
         h = self._optix.setup_camera(name, cam_type.value, work_distribution.value,
                                      eye_ptr, target_ptr, up.ctypes.data,
                                      aperture_radius, aperture_fract,
-                                     focal_scale, chroma_l, chroma_t,
+                                     focal_scale, swirl_scale, chroma_l, chroma_t,
                                      fov, rxy, cx, cy, sensor_height, blur, glock,
                                      tex_list, make_current
         )
@@ -2911,6 +2916,7 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
                       up: Optional[Any] = None,
                       aperture_radius: float = -1.0,
                       focal_scale: float = -1.0,
+                      swirl_scale: float = 0.0,
                       fov: float = -1.0,
                       camera_matrix: Optional[Any] = None,
                       #distort_coeffs: Optional[Any] = None,
@@ -2931,6 +2937,8 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
             Aperture radius (increases focus blur for depth of field cameras).
         focal_scale : float, optional
             Focus distance / (eye - target).length.
+        swirl_scale : float, optional
+            Bokeh swirl scale.
         fov : float, optional
             Field of view in degrees.
         camera_matrix : array_like, optional
@@ -2984,7 +2992,7 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
         #else:                          distort_coeffs_ptr = 0
 
         if self._optix.update_camera(name, eye_ptr, target_ptr, up_ptr,
-                                     aperture_radius, focal_scale, fov, rxy, cx, cy,
+                                     aperture_radius, focal_scale, swirl_scale, fov, rxy, cx, cy,
                                      sensor_height):
             self._logger.info("Camera %s updated.", name)
         else:
