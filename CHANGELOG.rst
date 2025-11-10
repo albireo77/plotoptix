@@ -7,6 +7,8 @@ Release history
 Added
 ~~~~~
 
+- Bokeh swirl and asymmetrical vignette in cameras with depth of field simulation, allowing for rendering vintage lens effects.
+
 - Roving capsules intersection mode added to curve geoms: BSplineQuadRocaps, BSplineCubicRocaps, CatmullRomRocaps, BezierRocaps,
   significantly improving performance on a longer strand segments, see 2_beziers.py sample code. Minor improvemts on other curve
   geom due to simplified vertex access code.

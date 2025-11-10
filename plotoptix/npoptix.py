@@ -2748,6 +2748,7 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
                      aperture_fract: float = 0.15,
                      focal_scale: float = -1,
                      swirl_scale: float = 0,
+                     bokeh_vignette: float = 0,
                      chroma_l: float = 0.05,
                      chroma_t: float = 0.01,
                      fov: float = -1,
@@ -2797,7 +2798,10 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
             Focusing distance, relative to ``eye - target`` length. Default `-1` is internally
             reset to `1.0`, that is focus is set at the target point.
         swirl_scale : float, optional
-            Bokeh swirl scale. Default `0`, no swirl (circular bokeh).
+            Bokeh swirl scale. Default is `0` (no swirl, circular bokeh), use up to `~0.8` for nice results.
+        bokeh_vignette : float, optional
+            Bokeh vignette amount, responsible for asymmetrical cut of the bokeh disc and highlighted inner edge
+            of the disc. Default is `0` (circular, flat bokeh disc), use up to `~0.5` for nice results.
         chroma_l : float, optional
             Longitudinal chromatic aberration strength, relative variation of the focusing
             distance for different wavelengths. Use be a small positive value << 1.0. Default
@@ -2850,6 +2854,8 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
         if focal_scale <= 0.0: focal_scale = 1.0
         if swirl_scale < -3.0: swirl_scale = -3.0
         if swirl_scale > 3.0: swirl_scale = 3.0
+        if bokeh_vignette < 0.0: bokeh_vignette = 0.0
+        if bokeh_vignette > 1.0: bokeh_vignette = 1.0
         if fov <= 0: fov = 35.0
 
         if sensor_height <= 0: sensor_height = 24.0
@@ -2896,8 +2902,8 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
 
         h = self._optix.setup_camera(name, cam_type.value, work_distribution.value,
                                      eye_ptr, target_ptr, up.ctypes.data,
-                                     aperture_radius, aperture_fract,
-                                     focal_scale, swirl_scale, chroma_l, chroma_t,
+                                     aperture_radius, aperture_fract, focal_scale,
+                                     swirl_scale, bokeh_vignette, chroma_l, chroma_t,
                                      fov, rxy, cx, cy, sensor_height, blur, glock,
                                      tex_list, make_current
         )
@@ -2917,6 +2923,7 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
                       aperture_radius: float = -1.0,
                       focal_scale: float = -1.0,
                       swirl_scale: float = 0.0,
+                      bokeh_vignette: float = 0.0,
                       fov: float = -1.0,
                       camera_matrix: Optional[Any] = None,
                       #distort_coeffs: Optional[Any] = None,
@@ -2938,7 +2945,10 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
         focal_scale : float, optional
             Focus distance / (eye - target).length.
         swirl_scale : float, optional
-            Bokeh swirl scale.
+            Bokeh swirl scale. Default is `0` (no swirl, circular bokeh), use up to `~0.8` for nice results.
+        bokeh_vignette : float, optional
+            Bokeh vignette amount, responsible for asymmetrical cut of the bokeh disc and highlighted inner edge
+            of the disc. Default is `0` (circular, flat bokeh disc), use up to `~0.5` for nice results.
         fov : float, optional
             Field of view in degrees.
         camera_matrix : array_like, optional
@@ -2992,8 +3002,8 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
         #else:                          distort_coeffs_ptr = 0
 
         if self._optix.update_camera(name, eye_ptr, target_ptr, up_ptr,
-                                     aperture_radius, focal_scale, swirl_scale, fov, rxy, cx, cy,
-                                     sensor_height):
+                                     aperture_radius, focal_scale, swirl_scale, bokeh_vignette,
+                                     fov, rxy, cx, cy, sensor_height):
             self._logger.info("Camera %s updated.", name)
         else:
             msg = "Camera %s update failed." % name
