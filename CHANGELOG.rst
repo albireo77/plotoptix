@@ -17,6 +17,7 @@ Changed
 ~~~~~~~
 
 - Moved to OptiX 9.0.
+- Moved to NVENC SDK 13.0.
 
 Removed
 ~~~~~~~

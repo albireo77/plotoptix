@@ -1073,8 +1073,59 @@ class RtFormat(Enum):
     """8 bit unsigned integer (x, y, z, w) vectors.
     """
 
+class NvEncCodec(Enum):
+    """H.264/HEVC codec selection.
+
+    See Also
+    --------
+    :meth:`plotoptix.NpOptiX.encoder_create`
+    """
+
+    Default = 0
+    """
+    """
+
+    H264 = 1
+    """
+    """
+
+    HEVC = 2
+    """
+    """
+
+class NvEncTuning(Enum):
+    """H.264/HEVC tuning info mode
+    
+    See Also
+    --------
+    :meth:`plotoptix.NpOptiX.encoder_create`
+    """
+    Default = 0
+    """
+    """
+
+    HQ = 1
+    """
+    """
+    
+    LowLatency = 2
+    """
+    """
+    
+    UltraLowLatency = 3
+    """
+    """
+    
+    Lossless = 4
+    """
+    """
+
+    UHQ = 5
+    """
+    """
+
 class NvEncProfile(Enum):
-    """H.264 encoding profile.
+    """H.264/HEVC encoding profile.
 
     Beware that some combinations are not supported by all players
     (e.g. lossless encoding is not playable in Windows Media Player).
@@ -1104,8 +1155,20 @@ class NvEncProfile(Enum):
     """
     """
 
+    HevcMain = 5
+    """
+    """
+
+    HevcMain10 = 6
+    """
+    """
+
+    HevcFrext = 7
+    """
+    """
+
 class NvEncPreset(Enum):
-    """H.264 encoding preset.
+    """H.264/HEVC encoding preset.
 
     Beware that some combinations may not be supported by all players
     (e.g. lossless encoding is not playable in Windows Media Player).
@@ -1119,35 +1182,31 @@ class NvEncPreset(Enum):
     """
     """
 
-    HP = 1
+    P1 = 1
     """
     """
 
-    HQ = 2
+    P2 = 2
     """
     """
 
-    BD = 3
+    P3 = 3
     """
     """
 
-    LL = 4
+    P4 = 4
     """
     """
 
-    LL_HP = 5
+    P5 = 5
     """
     """
 
-    LL_HQ = 6
+    P6 = 6
     """
     """
 
-    Lossless = 7
-    """
-    """
-
-    Lossless_HP = 8
+    P7 = 7
     """
     """
 
