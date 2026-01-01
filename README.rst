@@ -114,8 +114,9 @@ Windows prerequisites
 
 *FFmpeg:*
 
-FFmpeg shared libraries >= 7.0 are required to enable video encoding features. Visit `FFmpeg site <https://ffmpeg.org/download.html>`__ and go to the site with pre-built Windows
-binaries. Download the *full-shared* package. Unpack it to a new folder. You'll need to add path to dll files (the `bin` folder) to your `PATH` environment variable.
+FFmpeg shared libraries >= 7.0 are required to enable video encoding features (ffmpeg 7.0, 7.1 and 8.0 were tested). Visit `FFmpeg site <https://ffmpeg.org/download.html>`__ and
+go to the site with pre-built Windows binaries. Download the *full-shared* package. Unpack it to a new folder. You'll need to add path to dll files (the `bin` folder, which
+contains exe's and dll's) to your `PATH` environment variable.
 
 Linux prerequisites
 -------------------
