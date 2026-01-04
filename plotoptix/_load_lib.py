@@ -488,7 +488,7 @@ def _load_optix_win():
     optix.set_max_accumulation_frames.argtypes = [c_int]
     optix.set_max_accumulation_frames.restype = c_bool
 
-    optix.encoder_create.argtypes = [c_int, c_int, c_int, c_int, c_int]
+    optix.encoder_create.argtypes = [c_int, c_int, c_int, c_int, c_int, c_int]
     optix.encoder_create.restype = c_bool
 
     optix.encoder_start.argtypes = [c_wchar_p, c_uint]
@@ -1135,9 +1135,9 @@ class _ClrOptiX_v2:
 
     def set_max_accumulation_frames(self, n): return self._optix.set_max_accumulation_frames(n)
 
-    def encoder_create(self, fps, bit_rate, idr_rate, profile, preset):
+    def encoder_create(self, fps, bit_rate, idr_rate, codec, profile, preset):
         if self._encoder_available:
-            return self._optix.encoder_create(fps, bit_rate, idr_rate, profile, preset)
+            return self._optix.encoder_create(fps, bit_rate, idr_rate, codec, profile, preset)
         else: return False
 
     def encoder_start(self, output_name, n_frames): return self._optix.encoder_start(output_name, n_frames)
@@ -1948,9 +1948,9 @@ class _ClrOptiX_v3:
 
     def set_max_accumulation_frames(self, n): return self._optix.set_max_accumulation_frames(n)
 
-    def encoder_create(self, fps, bit_rate, idr_rate, profile, preset):
+    def encoder_create(self, fps, bit_rate, idr_rate, codec, profile, preset):
         if self._encoder_available:
-            return self._optix.encoder_create(fps, bit_rate, idr_rate, profile, preset)
+            return self._optix.encoder_create(fps, bit_rate, idr_rate, codec, profile, preset)
         else: return False
 
     def encoder_start(self, output_name, n_frames): return self._optix.encoder_start(output_name, n_frames)

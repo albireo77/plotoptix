@@ -71,7 +71,7 @@ Features
 - zero-copy access to GPU buffers wrapped in ndarrays: 8/32bpc image, hit and object info, albedo, normals
 - direct access to `CuPy <https://cupy.dev>`__ and `PyTorch <https://pytorch.org>`__ tensors data stored on GPU (and CPU as well) for texture and geometry updates
 - GPU acceleration using RT Cores and everything else what comes with `OptiX <https://developer.nvidia.com/optix>`__
-- hardware accelerated video output to MP4 file format using `NVENC 9.0 <https://developer.nvidia.com/nvidia-video-codec-sdk>`__
+- hardware accelerated video output to MP4 file format using `NVENC 13.0 <https://developer.nvidia.com/nvidia-video-codec-sdk>`__
 - Tkinter based simple GUI window or a headless raytracer
 - configurable multi-GPU support
 

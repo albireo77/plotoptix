@@ -2445,6 +2445,7 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
 
     def encoder_create(self, fps: int, bitrate: float = 2,
                        idrrate: Optional[int] = None,
+                       codec:  Union[NvEncCodec, str] = NvEncCodec.Default,
                        profile: Union[NvEncProfile, str] = NvEncProfile.Default,
                        preset: Union[NvEncPreset, str] = NvEncPreset.Default) -> None:
         """Create video encoder.
@@ -2461,25 +2462,39 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
         bitrate : float, optional
             Constant bitrate of the encoded stream, in Mbits to save you typing 0's.
         idrrate : int, optional
-            Instantaneous Decode Refresh frame interval. 2 seconds interval is used if
-            ``idrrate`` is not provided.
+            Instantaneous Decode Refresh frame interval. 2 seconds interval (so ``2*fps``)
+            is used if ``idrrate`` is not provided.
+        codec : NvEncCodec enum or string, optional
+            Codec selection, H.264 and HEVC are supported now.
         profile : NvEncProfile enum or string, optional
-            H.264 encoding profile.
+            H.264 or HEVC encoding profile.
         preset : NvEncPreset enum or string, optional
-            H.264 encoding preset,  overrides ``bitrate`` settings.
+            H.264 or HEVC encoding preset,  overrides ``bitrate`` settings.
 
         See Also
         --------
         :class:`plotoptix.enums.NvEncProfile`, :class:`plotoptix.enums.NvEncPreset`
         """
         if idrrate is None: idrrate = 2 * fps
+        if isinstance(codec, str): codec = NvEncCodec[codec]
         if isinstance(profile, str): profile = NvEncProfile[profile]
         if isinstance(preset, str): preset = NvEncPreset[preset]
+
+        h264_profiles = [NvEncProfile.Default, NvEncProfile.Baseline, NvEncProfile.Main, NvEncProfile.High, NvEncProfile.High444]
+        if codec == NvEncCodec.H264 and not profile in h264_profiles:
+            msg = f"H264 codec profile should be one of {h264_profiles}."
+            self._logger.error(msg)
+            if self._raise_on_error: raise ValueError(msg)
+        hevc_profiles = [NvEncProfile.Default, NvEncProfile.HevcMain, NvEncProfile.HevcMain10, NvEncProfile.HevcFRext]
+        if codec == NvEncCodec.HEVC and not profile in hevc_profiles:
+            msg = f"HEVC codec profile should be one of {hevc_profiles}."
+            self._logger.error(msg)
+            if self._raise_on_error: raise ValueError(msg)
 
         try:
             self._padlock.acquire()
 
-            if not self._optix.encoder_create(fps, int(1000000 * bitrate), idrrate, profile.value, preset.value):
+            if not self._optix.encoder_create(fps, int(1000000 * bitrate), idrrate, codec.value, profile.value, preset.value):
                 msg = "Encoder not created."
                 self._logger.error(msg)
                 if self._raise_on_error: raise ValueError(msg)

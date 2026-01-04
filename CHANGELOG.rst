@@ -13,11 +13,13 @@ Added
   significantly improving performance on a longer strand segments, see 2_beziers.py sample code. Minor improvemts on other curve
   geom due to simplified vertex access code.
 
+- HEVC codec support.
+
 Changed
 ~~~~~~~
 
 - Moved to OptiX 9.0.
-- Moved to NVENC SDK 13.0.
+- Moved to NVENC SDK 13.0. Note, preset names are changed accordingly to P1 - P7.
 
 Removed
 ~~~~~~~

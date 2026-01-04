@@ -1086,42 +1086,13 @@ class NvEncCodec(Enum):
     """
 
     H264 = 1
-    """
+    """H.264 Codec.
     """
 
     HEVC = 2
-    """
-    """
+    """HEVC (H.265) Codec.
 
-class NvEncTuning(Enum):
-    """H.264/HEVC tuning info mode
-    
-    See Also
-    --------
-    :meth:`plotoptix.NpOptiX.encoder_create`
-    """
-    Default = 0
-    """
-    """
-
-    HQ = 1
-    """
-    """
-    
-    LowLatency = 2
-    """
-    """
-    
-    UltraLowLatency = 3
-    """
-    """
-    
-    Lossless = 4
-    """
-    """
-
-    UHQ = 5
-    """
+    Produces higher visual quality / lower output file size than H.264 codec.
     """
 
 class NvEncProfile(Enum):
@@ -1152,7 +1123,7 @@ class NvEncProfile(Enum):
     """
 
     High444 = 4
-    """
+    """Use for losless compression.
     """
 
     HevcMain = 5
@@ -1160,11 +1131,17 @@ class NvEncProfile(Enum):
     """
 
     HevcMain10 = 6
-    """
+    """HEVC Main10 profile.
+
+    The profile is now set to use ultra high quality tuning, resulting
+    with 5 (Ada Lovelace) or 7 (Blackwell) B-frames structure and higher
+    visual quality / lower output file size than ``HevcMain`` profile.
+
+    Use of 10-bit color input to be implemented.
     """
 
-    HevcFrext = 7
-    """
+    HevcFRext = 7
+    """Use for losless compression.
     """
 
 class NvEncPreset(Enum):
