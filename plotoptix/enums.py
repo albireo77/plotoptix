@@ -1145,7 +1145,7 @@ class NvEncProfile(Enum):
     """
 
 class NvEncPreset(Enum):
-    """H.264/HEVC encoding preset.
+    """Encoding preset.
 
     Beware that some combinations may not be supported by all players
     (e.g. lossless encoding is not playable in Windows Media Player).
