@@ -20,6 +20,7 @@ Changed
 
 - Moved to OptiX 9.0.
 - Moved to NVENC SDK 13.0. Note, preset names are changed accordingly to P1 - P7.
+- Updated `GpuArchitecture` enum: added Ada Lovelace and Blackwell architectures.
 
 Removed
 ~~~~~~~

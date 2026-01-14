@@ -1239,3 +1239,11 @@ class GpuArchitecture(Enum):
     Compute_86 = 860
     """Ampere.
     """
+
+    Compute_89 = 890
+    """Ada Lovelace.
+    """
+
+    Compute_120 = 1200
+    """Blackwell.
+    """
