@@ -294,10 +294,10 @@ def _load_optix_win():
     optix.set_noise_threshold.argtypes = [c_float]
     optix.set_noise_threshold.restype = c_bool
 
-    optix.setup_camera.argtypes = [c_wchar_p, c_int, c_int, c_void_p, c_void_p, c_void_p, c_float, c_float, c_float, c_float, c_float, c_float, c_float, c_float, c_float, c_float, c_float, c_bool, c_wchar_p, c_bool]
+    optix.setup_camera.argtypes = [c_wchar_p, c_int, c_int, c_void_p, c_void_p, c_void_p, c_float, c_float, c_float, c_float, c_float, c_float, c_float, c_float, c_float, c_float, c_float, c_float, c_float, c_bool, c_wchar_p, c_bool]
     optix.setup_camera.restype = c_int
 
-    optix.update_camera.argtypes = [c_wchar_p, c_void_p, c_void_p, c_void_p, c_float, c_float, c_float, c_float, c_float, c_float, c_float]
+    optix.update_camera.argtypes = [c_wchar_p, c_void_p, c_void_p, c_void_p, c_float, c_float, c_float, c_float, c_float, c_float, c_float, c_float, c_float]
     optix.update_camera.restype = c_bool
 
     optix.fit_camera.argtypes = [c_uint, c_wchar_p, c_float]
@@ -488,7 +488,7 @@ def _load_optix_win():
     optix.set_max_accumulation_frames.argtypes = [c_int]
     optix.set_max_accumulation_frames.restype = c_bool
 
-    optix.encoder_create.argtypes = [c_int, c_int, c_int, c_int, c_int]
+    optix.encoder_create.argtypes = [c_int, c_int, c_int, c_int, c_int, c_int]
     optix.encoder_create.restype = c_bool
 
     optix.encoder_start.argtypes = [c_wchar_p, c_uint]
@@ -951,19 +951,19 @@ class _ClrOptiX_v2:
 
     def set_noise_threshold(self, thr): return self._optix.set_noise_threshold(thr)
 
-    def setup_camera(self, name, camera_type, work_distribution, eye, target, up, aperture_r, aperture_fract, focal_scale, chroma_l, chroma_t, fov, rxy, cx, cy, sensor_height, blur, glock, textures, make_current):
+    def setup_camera(self, name, camera_type, work_distribution, eye, target, up, aperture_r, aperture_fract, focal_scale, swirl_scale, bokeh_vignette, chroma_l, chroma_t, fov, rxy, cx, cy, sensor_height, blur, glock, textures, make_current):
         return self._optix.setup_camera_ptr(name, camera_type, work_distribution,
                                             IntPtr.__overloads__[Int64](eye),
                                             IntPtr.__overloads__[Int64](target),
                                             IntPtr.__overloads__[Int64](up),
-                                            aperture_r, aperture_fract, focal_scale, chroma_l, chroma_t, fov, rxy, cx, cy, sensor_height, blur, glock, textures, make_current)
+                                            aperture_r, aperture_fract, focal_scale, swirl_scale, bokeh_vignette, chroma_l, chroma_t, fov, rxy, cx, cy, sensor_height, blur, glock, textures, make_current)
 
-    def update_camera(self, name, eye, target, up, aperture_r, focal_scale, fov, rxy, cx, cy, sensor_height):
+    def update_camera(self, name, eye, target, up, aperture_r, focal_scale, swirl_scale, bokeh_vignette, fov, rxy, cx, cy, sensor_height):
         return self._optix.update_camera_ptr(name,
                                              IntPtr.__overloads__[Int64](eye),
                                              IntPtr.__overloads__[Int64](target),
                                              IntPtr.__overloads__[Int64](up),
-                                             aperture_r, focal_scale, fov, rxy, cx, cy, sensor_height)
+                                             aperture_r, focal_scale, swirl_scale, bokeh_vignette, fov, rxy, cx, cy, sensor_height)
 
     def fit_camera(self, handle, geo_name, scale): return self._optix.fit_camera(handle, geo_name, scale)
 
@@ -1135,9 +1135,9 @@ class _ClrOptiX_v2:
 
     def set_max_accumulation_frames(self, n): return self._optix.set_max_accumulation_frames(n)
 
-    def encoder_create(self, fps, bit_rate, idr_rate, profile, preset):
+    def encoder_create(self, fps, bit_rate, idr_rate, codec, profile, preset):
         if self._encoder_available:
-            return self._optix.encoder_create(fps, bit_rate, idr_rate, profile, preset)
+            return self._optix.encoder_create(fps, bit_rate, idr_rate, codec, profile, preset)
         else: return False
 
     def encoder_start(self, output_name, n_frames): return self._optix.encoder_start(output_name, n_frames)
@@ -1731,7 +1731,7 @@ class _ClrOptiX_v3:
 
     def set_noise_threshold(self, thr): return self._optix.set_noise_threshold(thr)
 
-    def setup_camera(self, name, camera_type, work_distribution, eye, target, up, aperture_r, aperture_fract, focal_scale, chroma_l, chroma_t, fov, rxy, cx, cy, sensor_height, blur, glock, textures, make_current):
+    def setup_camera(self, name, camera_type, work_distribution, eye, target, up, aperture_r, aperture_fract, focal_scale, swirl_scale, bokeh_vignette, chroma_l, chroma_t, fov, rxy, cx, cy, sensor_height, blur, glock, textures, make_current):
         return self._optix.setup_camera_ptr(name, camera_type, work_distribution,
                                             IntPtr(eye),
                                             IntPtr(target),
@@ -1739,6 +1739,8 @@ class _ClrOptiX_v3:
                                             float(aperture_r),
                                             float(aperture_fract),
                                             float(focal_scale),
+                                            float(swirl_scale),
+                                            float(bokeh_vignette),
                                             float(chroma_l),
                                             float(chroma_t),
                                             float(fov),
@@ -1749,13 +1751,15 @@ class _ClrOptiX_v3:
                                             float(blur),
                                             glock, textures, make_current)
 
-    def update_camera(self, name, eye, target, up, aperture_r, focal_scale, fov, rxy, cx, cy, sensor_height):
+    def update_camera(self, name, eye, target, up, aperture_r, focal_scale, swirl_scale, bokeh_vignette, fov, rxy, cx, cy, sensor_height):
         return self._optix.update_camera_ptr(name,
                                              IntPtr(eye),
                                              IntPtr(target),
                                              IntPtr(up),
                                              float(aperture_r),
                                              float(focal_scale),
+                                             float(swirl_scale),
+                                             float(bokeh_vignette),
                                              float(fov),
                                              float(rxy),
                                              float(cx),
@@ -1944,9 +1948,9 @@ class _ClrOptiX_v3:
 
     def set_max_accumulation_frames(self, n): return self._optix.set_max_accumulation_frames(n)
 
-    def encoder_create(self, fps, bit_rate, idr_rate, profile, preset):
+    def encoder_create(self, fps, bit_rate, idr_rate, codec, profile, preset):
         if self._encoder_available:
-            return self._optix.encoder_create(fps, bit_rate, idr_rate, profile, preset)
+            return self._optix.encoder_create(fps, bit_rate, idr_rate, codec, profile, preset)
         else: return False
 
     def encoder_start(self, output_name, n_frames): return self._optix.encoder_start(output_name, n_frames)

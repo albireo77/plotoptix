@@ -1,7 +1,7 @@
 """
-With ``Beziers`` geometry you can setup all control points and segments
-can be placed independently in contrast to other curve geometries where
-all data points are connected or interpolated with a single curve.
+With ``Beziers`` geometry you can setup all control points so all
+segments are independent, in contrast to other curve geometries where
+you setup data points to be connected or interpolated with a single curve.
 
 This example shows how to:
    - create a large set of independent bezier segments
@@ -68,7 +68,8 @@ def main():
     rt.set_background(0.99)                 # white background
     rt.set_ambient(0.15)                    # dim ambient light
 
-    rt.set_data("curve", pos=xyz, r=r, c=c, geom="Beziers")
+    #rt.set_data("curve", pos=xyz, r=r, c=c, geom="Beziers")
+    rt.set_data("curve", pos=xyz, r=r, c=c, geom="BezierRocaps") # much faster on long segments typically used for such hair-like objects
 
     rt.setup_camera("cam1", # cam_type="DoF",
                     eye=[-6, 4, 5], target=[0, -0.6, 0],

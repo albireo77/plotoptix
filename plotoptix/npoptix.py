@@ -2445,6 +2445,7 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
 
     def encoder_create(self, fps: int, bitrate: float = 2,
                        idrrate: Optional[int] = None,
+                       codec:  Union[NvEncCodec, str] = NvEncCodec.Default,
                        profile: Union[NvEncProfile, str] = NvEncProfile.Default,
                        preset: Union[NvEncPreset, str] = NvEncPreset.Default) -> None:
         """Create video encoder.
@@ -2461,25 +2462,39 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
         bitrate : float, optional
             Constant bitrate of the encoded stream, in Mbits to save you typing 0's.
         idrrate : int, optional
-            Instantaneous Decode Refresh frame interval. 2 seconds interval is used if
-            ``idrrate`` is not provided.
+            Instantaneous Decode Refresh frame interval. 2 seconds interval (so ``2*fps``)
+            is used if ``idrrate`` is not provided.
+        codec : NvEncCodec enum or string, optional
+            Codec selection, H.264 and HEVC are supported now.
         profile : NvEncProfile enum or string, optional
-            H.264 encoding profile.
+            H.264 or HEVC encoding profile.
         preset : NvEncPreset enum or string, optional
-            H.264 encoding preset,  overrides ``bitrate`` settings.
+            H.264 or HEVC encoding preset,  overrides ``bitrate`` settings.
 
         See Also
         --------
         :class:`plotoptix.enums.NvEncProfile`, :class:`plotoptix.enums.NvEncPreset`
         """
         if idrrate is None: idrrate = 2 * fps
+        if isinstance(codec, str): codec = NvEncCodec[codec]
         if isinstance(profile, str): profile = NvEncProfile[profile]
         if isinstance(preset, str): preset = NvEncPreset[preset]
+
+        h264_profiles = [NvEncProfile.Default, NvEncProfile.Baseline, NvEncProfile.Main, NvEncProfile.High, NvEncProfile.High444]
+        if codec == NvEncCodec.H264 and not profile in h264_profiles:
+            msg = f"H264 codec profile should be one of {h264_profiles}."
+            self._logger.error(msg)
+            if self._raise_on_error: raise ValueError(msg)
+        hevc_profiles = [NvEncProfile.Default, NvEncProfile.HevcMain, NvEncProfile.HevcMain10, NvEncProfile.HevcFRext]
+        if codec == NvEncCodec.HEVC and not profile in hevc_profiles:
+            msg = f"HEVC codec profile should be one of {hevc_profiles}."
+            self._logger.error(msg)
+            if self._raise_on_error: raise ValueError(msg)
 
         try:
             self._padlock.acquire()
 
-            if not self._optix.encoder_create(fps, int(1000000 * bitrate), idrrate, profile.value, preset.value):
+            if not self._optix.encoder_create(fps, int(1000000 * bitrate), idrrate, codec.value, profile.value, preset.value):
                 msg = "Encoder not created."
                 self._logger.error(msg)
                 if self._raise_on_error: raise ValueError(msg)
@@ -2747,6 +2762,8 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
                      aperture_radius: float = -1,
                      aperture_fract: float = 0.15,
                      focal_scale: float = -1,
+                     swirl_scale: float = 0,
+                     bokeh_vignette: float = 0,
                      chroma_l: float = 0.05,
                      chroma_t: float = 0.01,
                      fov: float = -1,
@@ -2795,6 +2812,11 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
         focal_scale : float, optional
             Focusing distance, relative to ``eye - target`` length. Default `-1` is internally
             reset to `1.0`, that is focus is set at the target point.
+        swirl_scale : float, optional
+            Bokeh swirl scale. Default is `0` (no swirl, circular bokeh), use up to `~0.8` for nice results.
+        bokeh_vignette : float, optional
+            Bokeh vignette amount, responsible for asymmetrical cut of the bokeh disc and highlighted inner edge
+            of the disc. Default is `0` (circular, flat bokeh disc), use up to `~0.5` for nice results.
         chroma_l : float, optional
             Longitudinal chromatic aberration strength, relative variation of the focusing
             distance for different wavelengths. Use be a small positive value << 1.0. Default
@@ -2844,7 +2866,11 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
 
         if up is None: up = np.ascontiguousarray([0, 1, 0], dtype=np.float32)
         if aperture_radius <= 0: aperture_radius = 0.1
-        if focal_scale <= 0: focal_scale = 1.0
+        if focal_scale <= 0.0: focal_scale = 1.0
+        if swirl_scale < -3.0: swirl_scale = -3.0
+        if swirl_scale > 3.0: swirl_scale = 3.0
+        if bokeh_vignette < 0.0: bokeh_vignette = 0.0
+        if bokeh_vignette > 1.0: bokeh_vignette = 1.0
         if fov <= 0: fov = 35.0
 
         if sensor_height <= 0: sensor_height = 24.0
@@ -2891,8 +2917,8 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
 
         h = self._optix.setup_camera(name, cam_type.value, work_distribution.value,
                                      eye_ptr, target_ptr, up.ctypes.data,
-                                     aperture_radius, aperture_fract,
-                                     focal_scale, chroma_l, chroma_t,
+                                     aperture_radius, aperture_fract, focal_scale,
+                                     swirl_scale, bokeh_vignette, chroma_l, chroma_t,
                                      fov, rxy, cx, cy, sensor_height, blur, glock,
                                      tex_list, make_current
         )
@@ -2911,6 +2937,8 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
                       up: Optional[Any] = None,
                       aperture_radius: float = -1.0,
                       focal_scale: float = -1.0,
+                      swirl_scale: float = 0.0,
+                      bokeh_vignette: float = 0.0,
                       fov: float = -1.0,
                       camera_matrix: Optional[Any] = None,
                       #distort_coeffs: Optional[Any] = None,
@@ -2931,6 +2959,11 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
             Aperture radius (increases focus blur for depth of field cameras).
         focal_scale : float, optional
             Focus distance / (eye - target).length.
+        swirl_scale : float, optional
+            Bokeh swirl scale. Default is `0` (no swirl, circular bokeh), use up to `~0.8` for nice results.
+        bokeh_vignette : float, optional
+            Bokeh vignette amount, responsible for asymmetrical cut of the bokeh disc and highlighted inner edge
+            of the disc. Default is `0` (circular, flat bokeh disc), use up to `~0.5` for nice results.
         fov : float, optional
             Field of view in degrees.
         camera_matrix : array_like, optional
@@ -2984,8 +3017,8 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
         #else:                          distort_coeffs_ptr = 0
 
         if self._optix.update_camera(name, eye_ptr, target_ptr, up_ptr,
-                                     aperture_radius, focal_scale, fov, rxy, cx, cy,
-                                     sensor_height):
+                                     aperture_radius, focal_scale, swirl_scale, bokeh_vignette,
+                                     fov, rxy, cx, cy, sensor_height):
             self._logger.info("Camera %s updated.", name)
         else:
             msg = "Camera %s update failed." % name
@@ -4311,7 +4344,7 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
                 if self._raise_on_error: raise ValueError(msg)
                 is_ok = False
 
-        elif geom == Geometry.BSplineQuad:
+        elif geom in [Geometry.BSplineQuad, Geometry.BSplineQuadRocaps]:
             if n_primitives < 3:
                 msg = "BSplineQuad requires at least 3 data points."
                 self._logger.error(msg)
@@ -4337,7 +4370,7 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
                 if self._raise_on_error: raise ValueError(msg)
                 is_ok = False
 
-        elif geom == Geometry.BSplineCubic:
+        elif geom in [Geometry.BSplineCubic, Geometry.BSplineCubicRocaps]:
             if n_primitives < 4:
                 msg = "BSplineCubic requires at least 4 data points."
                 self._logger.error(msg)
@@ -4350,7 +4383,7 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
                 if self._raise_on_error: raise ValueError(msg)
                 is_ok = False
 
-        elif geom == Geometry.Beziers:
+        elif geom in [Geometry.Beziers, Geometry.BezierRocaps]:
             if n_primitives < 4:
                 msg = "Bezier requires at least 4 data points."
                 self._logger.error(msg)
@@ -4363,7 +4396,7 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
                 if self._raise_on_error: raise ValueError(msg)
                 is_ok = False
 
-        elif geom == Geometry.CatmullRom:
+        elif geom in [Geometry.CatmullRom, Geometry.CatmullRomRocaps]:
             if n_primitives < 4:
                 msg = "CatmullRom requires at least 4 data points."
                 self._logger.error(msg)
@@ -5507,7 +5540,7 @@ class NpOptiX(threading.Thread, metaclass=Singleton):
             if not isinstance(edges, np.ndarray): edges = np.ascontiguousarray(edges, dtype=np.int32)
             if edges.dtype != np.int32: edges = np.ascontiguousarray(edges, dtype=np.int32)
             if not edges.flags['C_CONTIGUOUS']: edges = np.ascontiguousarray(edges, dtype=np.int32)
-            assert (len(edges.shape) == 2 and edges.shape[1] == 3) or (len(edges.shape) == 1 and (edges.shape[0] % 2 == 0)), "Required index shape is (n,3) or (m), where m is a multiple of 2."
+            assert (len(edges.shape) == 2 and edges.shape[1] == 2) or (len(edges.shape) == 1 and (edges.shape[0] % 2 == 0)), "Required index shape is (n,2) or (m), where m is a multiple of 2."
             edges_ptr = edges.ctypes.data
             n_edges = edges.size // 2
             #m_edges = n_edges

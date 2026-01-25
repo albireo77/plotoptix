@@ -1,6 +1,32 @@
 Release history
 ===============
 
+`v0.19.0-rc` - 2026-01-25
+-------------------------
+
+Added
+~~~~~
+
+- Bokeh swirl and asymmetrical vignette in cameras with depth of field simulation, allowing for rendering vintage lens effects.
+
+- Roving capsules intersection mode added to curve geoms: BSplineQuadRocaps, BSplineCubicRocaps, CatmullRomRocaps, BezierRocaps,
+  significantly improving performance on a longer strand segments, see 2_beziers.py sample code. Minor improvemts on other curve
+  geom due to simplified vertex access code.
+
+- HEVC codec support.
+
+Changed
+~~~~~~~
+
+- Moved to OptiX 9.0.
+- Moved to NVENC SDK 13.0. Note, preset names are changed accordingly to P1 - P7. *Note:* FFmpeg 8.0 shared libs are recommended.
+- Updated `GpuArchitecture` enum: added Ada Lovelace and Blackwell architectures.
+
+Removed
+~~~~~~~
+
+- LDR denoiser based on OptiX driver (discontinued). Denoiser enum now points to DenoiserHDR. OIDN denoiser still supports LDR mode.
+
 `v0.18.4` - 2025-02-12
 ----------------------
 
@@ -8,7 +34,7 @@ Changed
 ~~~~~~~
 
 - Reworked heuristics for the noise-balanced ray sampling.
-- `NoiseBalanced` work distribution mode is now alias to `AbsNoiseBalanced` since it turns more often practical in terms of visual result
+- NoiseBalanced work distribution mode is now alias to AbsNoiseBalanced since it turns more often practical in terms of visual result
   and stable compute time.
 
 `v0.18.3` - 2025-01-03
@@ -672,6 +698,7 @@ Added
 - this changelog, markdown description content type tag for PyPI
 - use [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
+.. _`v0.19.0rc`: https://github.com/rnd-team-dev/plotoptix/releases/tag/v0.19.0-rc
 .. _`v0.18.4`: https://github.com/rnd-team-dev/plotoptix/releases/tag/v0.18.4
 .. _`v0.18.3`: https://github.com/rnd-team-dev/plotoptix/releases/tag/v0.18.3
 .. _`v0.18.2`: https://github.com/rnd-team-dev/plotoptix/releases/tag/v0.18.2

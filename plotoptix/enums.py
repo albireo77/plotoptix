@@ -305,8 +305,30 @@ class Geometry(Enum):
     interpolating all data points.
     """
 
+    BSplineQuadRocaps = 22
+    """Quadratic b-spline with nodes at data points (roving capsules implementation).
+
+    Curve thickness and color can be provided for each data point (curve node).
+    
+    Note: b-spline is not interpolating data points; see examples
+    how to pin start/end to a fixed position. Use
+    :attr:`plotoptix.enums.Geometry.BezierChain` for a smooth curve
+    interpolating all data points.
+    """
+
     BSplineCubic = 13
     """Cubic b-spline with nodes at data points.
+
+    Curve thickness and color can be provided for each data point (curve node).
+    
+    Note: b-spline is not interpolating data points; see examples
+    how to pin start/end to a fixed position. Use
+    :attr:`plotoptix.enums.Geometry.BezierChain` for a smooth curve
+    interpolating all data points.
+    """
+
+    BSplineCubicRocaps = 23
+    """Cubic b-spline with nodes at data points (roving capsules implementation).
 
     Curve thickness and color can be provided for each data point (curve node).
     
@@ -323,8 +345,26 @@ class Geometry(Enum):
     Curve interpolates its data points (nodes) exactly.
     """
 
+    CatmullRomRocaps = 24
+    """Catmull-Rom spline with nodes at data points (roving capsules implementation).
+
+    Curve thickness and color can be provided for each data point (curve node).
+    Curve interpolates its data points (nodes) exactly.
+    """
+
     Beziers = 16
     """Bezier curves with data points used as **control points** for each independent segment (OptiX native implementation).
+
+    Curve thickness and color can be provided for each data point (bezier control point).
+    Each segment is described with 4 control points: start, ctrl #1, ctrl #2, end. Multiple
+    segments are described with an array of control point 3D positions (colors, radii) of
+    successive segments, i.g. N segments will require an array ``(4*N,3)`` of positions,
+    an array ``(4*N,3)`` of colors and an array ``(N,)`` of radii, see also ``2_beziers.py``
+    in basic code examples.
+    """
+
+    BezierRocaps = 25
+    """Bezier curves with data points used as **control points** for each independent segment (roving capsules, OptiX native implementation).
 
     Curve thickness and color can be provided for each data point (bezier control point).
     Each segment is described with 4 control points: start, ctrl #1, ctrl #2, end. Multiple
@@ -826,32 +866,8 @@ class Postprocessing(Enum):
     >>> optix.add_postproc("Overlay")
     """
 
-    Denoiser = 7
-    """AI denoiser, LDR model.
-
-    This model is applied to the image after tone mapping. Image values are clamped
-    to the ``<0, 1>`` range at the denoiser input. Use appropriate exposure to scale the
-    image into that range; the gamma value should be about ``2.2`` (see :attr:`plotoptix.enums.Postprocessing.Gamma`).
-
-    Variables to configure:
-    
-    - denoiser_blend, float, amount of original image mixed with denoiser output
-      range: 0 (only denoiser output) to 1 (only original raytracing output)
-
-    - denoiser_start, uint, number of the accumulation frame after which denoiser is applied;
-      default velue is 4; see also denoiser_start in `raytracer configuration <npoptix_config.html#raytracer-configuration>`_
-
-    - denoiser_kind, int value of :class:`plotoptix.enums.DenoiserKind`, decides
-      which buffers are used as denoiser inputs
-
-    Examples
-    --------
-    >>> rt = TkOptiX()
-    >>>
-    >>> rt.set_float("denoiser_blend", 0.5)
-    >>> rt.set_uint("denoiser_start", 12)
-    >>> rt.set_int("denoiser_kind", DenoiserKind.Rgb.value)
-    >>> rt.add_postproc("Denoiser")
+    Denoiser = 8
+    """AI denoiser, same as ``DenoiserHDR`` model.
     """
 
     DenoiserHDR = 8
@@ -1057,8 +1073,30 @@ class RtFormat(Enum):
     """8 bit unsigned integer (x, y, z, w) vectors.
     """
 
+class NvEncCodec(Enum):
+    """H.264/HEVC codec selection.
+
+    See Also
+    --------
+    :meth:`plotoptix.NpOptiX.encoder_create`
+    """
+
+    Default = 0
+    """
+    """
+
+    H264 = 1
+    """H.264 Codec.
+    """
+
+    HEVC = 2
+    """HEVC (H.265) Codec.
+
+    Produces higher visual quality / lower output file size than H.264 codec.
+    """
+
 class NvEncProfile(Enum):
-    """H.264 encoding profile.
+    """H.264/HEVC encoding profile.
 
     Beware that some combinations are not supported by all players
     (e.g. lossless encoding is not playable in Windows Media Player).
@@ -1085,11 +1123,29 @@ class NvEncProfile(Enum):
     """
 
     High444 = 4
+    """Use for losless compression.
+    """
+
+    HevcMain = 5
     """
     """
 
+    HevcMain10 = 6
+    """HEVC Main10 profile.
+
+    The profile is now set to use ultra high quality tuning, resulting
+    with 5 (Ada Lovelace) or 7 (Blackwell) B-frames structure and higher
+    visual quality / lower output file size than ``HevcMain`` profile.
+
+    Use of 10-bit color input to be implemented.
+    """
+
+    HevcFRext = 7
+    """Use for losless compression.
+    """
+
 class NvEncPreset(Enum):
-    """H.264 encoding preset.
+    """Encoding preset.
 
     Beware that some combinations may not be supported by all players
     (e.g. lossless encoding is not playable in Windows Media Player).
@@ -1103,35 +1159,31 @@ class NvEncPreset(Enum):
     """
     """
 
-    HP = 1
+    P1 = 1
     """
     """
 
-    HQ = 2
+    P2 = 2
     """
     """
 
-    BD = 3
+    P3 = 3
     """
     """
 
-    LL = 4
+    P4 = 4
     """
     """
 
-    LL_HP = 5
+    P5 = 5
     """
     """
 
-    LL_HQ = 6
+    P6 = 6
     """
     """
 
-    Lossless = 7
-    """
-    """
-
-    Lossless_HP = 8
+    P7 = 7
     """
     """
 
@@ -1186,4 +1238,12 @@ class GpuArchitecture(Enum):
 
     Compute_86 = 860
     """Ampere.
+    """
+
+    Compute_89 = 890
+    """Ada Lovelace.
+    """
+
+    Compute_120 = 1200
+    """Blackwell.
     """

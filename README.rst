@@ -17,7 +17,7 @@ PlotOptiX
 ----------------------------------------------
 
 - Sample images created with PlotOptiX: `Behance <https://www.behance.net/RnDTeam>`__, `Instagram <https://www.instagram.com/rnd.team.studio/>`__, and `Facebook <https://www.facebook.com/rndteam>`__.
-- Join `Patreon <https://www.patreon.com/rndteam?fan_landing=true>`__ for news, release plans and hi-res content.
+- Join `Patreon <https://www.patreon.com/rndteam?fan_landing=true>`__ to support the project.
 
 PlotOptiX is a 3D `ray tracing <https://en.wikipedia.org/wiki/Ray_tracing_(graphics)>`__ package for Python, aimed at easy and aesthetic visualization
 of large datasets (and small as well). Data features can be represented in images as a position, size/thickness and color of primitives
@@ -45,7 +45,7 @@ No need to write shaders, intersection algorithms, handle 3D scene technicalitie
 
 Check `examples on GitHub <https://github.com/rnd-team-dev/plotoptix/tree/master/examples>`__ for practical code samples and `documentation pages <https://plotoptix.rnd.team>`__ for a complete API reference.
 
-PlotOptiX is a set of CUDA shaders by `R&D Team <https://rnd.team>`_ wrapped in C#/C++ libraries with a Python API. It is based on `NVIDIA OptiX 8.1 <https://developer.nvidia.com/optix>`_ framework and makes use of RTX-capable GPU's.
+PlotOptiX is a set of CUDA shaders by `R&D Team <https://rnd.team>`_ wrapped in C#/C++ libraries with a Python API. It is based on `NVIDIA OptiX 9.0 <https://developer.nvidia.com/optix>`_ framework and makes use of RTX-capable GPU's.
 
 You can quickly display data in a simple plot:
 
@@ -61,7 +61,7 @@ Features
 --------
 
 - progressive path tracing with explicit light sampling
-- *cameras*: orthographic, pinhole, thin-lens and fisheye with depth of field and chromatic aberration simulation, panoramic camera for making 360 deg environment maps, user-defined projection for shooting rays at any angle, and from any origin
+- *cameras*: orthographic, pinhole, thin-lens and fisheye with depth of field, vintage lense bokeh swirl and chromatic aberrations simulation, panoramic camera for making 360 deg environment maps, user-defined projection for shooting rays at any angle, and from any origin
 - *geometries*: particles (spheres), parallelepipeds, parallelograms, tetrahedrons, linear segments, bezier curves, b-splines; *meshes*: shaded surface or wireframe, automatically generated from a parametric surface or f(x,y) data, or defined with vertices and faces, e.g. created with `pygmsh <https://github.com/nschloe/pygmsh>`__, or loaded from a file, e.g. supported by `trimesh <https://github.com/mikedh/trimesh>`__, or loaded from a Wavefront .obj file with a native loader
 - *materials*: flat, diffuse, reflective, refractive; including: light dispersion, surface roughness and metalness, volume scattering, and nested volumes
 - *light sources*: spherical and parallelogram, light emission in volumes, uniform environmental light or environment map
@@ -71,7 +71,7 @@ Features
 - zero-copy access to GPU buffers wrapped in ndarrays: 8/32bpc image, hit and object info, albedo, normals
 - direct access to `CuPy <https://cupy.dev>`__ and `PyTorch <https://pytorch.org>`__ tensors data stored on GPU (and CPU as well) for texture and geometry updates
 - GPU acceleration using RT Cores and everything else what comes with `OptiX <https://developer.nvidia.com/optix>`__
-- hardware accelerated video output to MP4 file format using `NVENC 9.0 <https://developer.nvidia.com/nvidia-video-codec-sdk>`__
+- hardware accelerated video output to MP4 file format using `NVENC 13.0 <https://developer.nvidia.com/nvidia-video-codec-sdk>`__
 - Tkinter based simple GUI window or a headless raytracer
 - configurable multi-GPU support
 
@@ -114,8 +114,9 @@ Windows prerequisites
 
 *FFmpeg:*
 
-FFmpeg shared libraries >= 7.0 are required to enable video encoding features. Visit `FFmpeg site <https://ffmpeg.org/download.html>`__ and go to the site with pre-built Windows
-binaries. Download the *full-shared* package. Unpack it to a new folder. You'll need to add path to dll files (the `bin` folder) to your `PATH` environment variable.
+FFmpeg shared libraries >= 7.0 are required to enable video encoding features (ffmpeg 8.0 recommended). Visit `FFmpeg site <https://ffmpeg.org/download.html>`__ and
+go to the site with pre-built Windows binaries. Download the *full-shared* package. Unpack it to a new folder. You'll need to add path to dll files (the `bin` folder, which
+contains exe's and dll's) to your `PATH` environment variable.
 
 Linux prerequisites
 -------------------
@@ -170,7 +171,9 @@ After successful installation you should be able to do python's import:
 
 *FFmpeg:*
 
-FFmpeg shared libraries >= 7.0 are required to enable video encoding features. Uninstall older version first. Visit `FFmpeg site <https://ffmpeg.org/download.html>`__ and download the most recent release sources. Unpack it to a new folder, cd to it. Configure, compile and install as below::
+FFmpeg shared libraries >= 7.0 are required to enable video encoding features (ffmpeg 8.0 recommended). Uninstall older version first.
+Visit `FFmpeg site <https://ffmpeg.org/download.html>`__ and download the most recent release sources. Unpack it to a new folder, cd to it.
+Configure, compile and install as below::
 
    ./configure --enable-shared
    make

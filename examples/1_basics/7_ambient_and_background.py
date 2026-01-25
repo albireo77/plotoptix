@@ -10,12 +10,12 @@ def main():
 
     # make some data first:
     n = 200
-    b = 4
-    k = 9.1
-    l = 1.1
-    m = 7.1
+    b = 16
+    k = 9.11
+    l = 1.13
+    m = 7.17
 
-    r0 = 0.06
+    r0 = 0.04
     q = 11
 
     x = np.sin(np.linspace(0, 2*b*k*np.pi, b*n))
@@ -28,7 +28,7 @@ def main():
     # create and configure, show the window later
     rt = TkOptiX()
 
-    rt.set_param(min_accumulation_step=4, max_accumulation_frames=64)
+    rt.set_param(min_accumulation_step=4, max_accumulation_frames=640)
     rt.setup_material("plastic", m_plastic)
 
     rt.setup_camera("dof_cam", cam_type="DoF",
@@ -104,10 +104,10 @@ def main():
     ################################################################################
 
     # create a plot of parametric curve calculated above, and open the window
-    rt.set_data("plot", pos=pos, r=r, c=0.94, geom="BezierChain", mat="plastic")
+    #rt.set_data("plot", pos=pos, r=r, c=0.94, geom="BezierChain", mat="plastic")
     #rt.set_data("plot", pos=pos, r=r, c=0.94, geom="Ribbon", mat="plastic")
     #rt.set_data("plot", pos=pos, r=r, c=0.94, geom="BSplineQuad", mat="plastic")
-    #rt.set_data("plot", pos=pos, r=r, c=0.94, geom="BSplineCubic", mat="plastic")
+    rt.set_data("plot", pos=pos, r=r, c=0.94, geom="BSplineCubic", mat="plastic")
     #rt.set_data("plot", pos=pos, r=r, c=0.94, geom="SegmentChain", mat="plastic")
 
     rt.start()
