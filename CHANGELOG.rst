@@ -1,8 +1,8 @@
 Release history
 ===============
 
-`v0.19.0` - unreleased
-----------------------
+`v0.19.0-rc` - 2026-01-25
+-------------------------
 
 Added
 ~~~~~
@@ -19,7 +19,7 @@ Changed
 ~~~~~~~
 
 - Moved to OptiX 9.0.
-- Moved to NVENC SDK 13.0. Note, preset names are changed accordingly to P1 - P7.
+- Moved to NVENC SDK 13.0. Note, preset names are changed accordingly to P1 - P7. *Note:* FFmpeg 8.0 shared libs are recommended.
 - Updated `GpuArchitecture` enum: added Ada Lovelace and Blackwell architectures.
 
 Removed
@@ -698,6 +698,7 @@ Added
 - this changelog, markdown description content type tag for PyPI
 - use [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
+.. _`v0.19.0rc`: https://github.com/rnd-team-dev/plotoptix/releases/tag/v0.19.0-rc
 .. _`v0.18.4`: https://github.com/rnd-team-dev/plotoptix/releases/tag/v0.18.4
 .. _`v0.18.3`: https://github.com/rnd-team-dev/plotoptix/releases/tag/v0.18.3
 .. _`v0.18.2`: https://github.com/rnd-team-dev/plotoptix/releases/tag/v0.18.2
