@@ -192,6 +192,9 @@ class TkOptiX(NpOptiX):
         self._image_scale = 1.0
         self._image_at = (0, 0)
 
+        # View orientation: NSWE (normal), NSEW (H-flip), SNEW (180°), SNWE (V-flip)
+        self._view_orientation = "NSWE"
+
         self._root.title("R&D PlotOptiX")
         self._root.protocol("WM_DELETE_WINDOW", self._gui_quit_callback)
 
@@ -268,11 +271,23 @@ class TkOptiX(NpOptiX):
         self._root.quit()
 
     def _get_image_xy(self, wnd_x, wnd_y):
-        if self._fixed_size is None: return wnd_x, wnd_y
+        if self._fixed_size is None:
+            x, y = wnd_x, wnd_y
         else:
             x = int((wnd_x - self._image_at[0]) / self._image_scale)
             y = int((wnd_y - self._image_at[1]) / self._image_scale)
-            return x, y
+        
+        # Apply inverse transformation for flipped views so mouse interactions feel natural
+        if self._view_orientation == "NSEW":  # Horizontal flip
+            x = self._width - 1 - x
+        elif self._view_orientation == "SNEW":  # 180° rotation
+            x = self._width - 1 - x
+            y = self._height - 1 - y
+        elif self._view_orientation == "SNWE":  # Vertical flip
+            y = self._height - 1 - y
+        # NSWE is normal - no transformation needed
+        
+        return x, y
 
     def _get_hit_at(self, x, y):
         c_x = c_float()
@@ -463,6 +478,22 @@ class TkOptiX(NpOptiX):
             self._any_key = False
             if event.keysym == "F12":
                 self._gui_save_image()
+            elif event.keysym == "F1":
+                self._view_orientation = "NSWE"
+                self._update_req = True
+                self._canvas.event_generate("<<LaunchFinished>>", when="now")
+            elif event.keysym == "F2":
+                self._view_orientation = "NSEW"
+                self._update_req = True
+                self._canvas.event_generate("<<LaunchFinished>>", when="now")
+            elif event.keysym == "F3":
+                self._view_orientation = "SNEW"
+                self._update_req = True
+                self._canvas.event_generate("<<LaunchFinished>>", when="now")
+            elif event.keysym == "F4":
+                self._view_orientation = "SNWE"
+                self._update_req = True
+                self._canvas.event_generate("<<LaunchFinished>>", when="now")
 
     def _gui_key_released(self, event):
         if event.keysym == "Control_L":
@@ -518,6 +549,15 @@ class TkOptiX(NpOptiX):
             pil_img = Image.fromarray(self._img_rgba, mode="RGBX")
         else:
             pil_img = Image.fromarray(self._dummy_rgba, mode="RGBX")
+
+        # Apply view orientation transformation
+        if self._view_orientation == "NSEW":  # Horizontal flip (left-right mirror)
+            pil_img = pil_img.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
+        elif self._view_orientation == "SNEW":  # 180° rotation (both flips)
+            pil_img = pil_img.transpose(Image.Transpose.ROTATE_180)
+        elif self._view_orientation == "SNWE":  # Vertical flip (top-bottom mirror)
+            pil_img = pil_img.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+        # NSWE is normal - no transformation needed
 
         move_to = (0, 0)
         self._image_scale = 1.0
