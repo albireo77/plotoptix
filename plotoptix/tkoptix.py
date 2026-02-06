@@ -478,19 +478,19 @@ class TkOptiX(NpOptiX):
             self._any_key = False
             if event.keysym == "F12":
                 self._gui_save_image()
-            elif event.keysym == "F1":
+            elif event.keysym == "F5":
                 self._view_orientation = "NSWE"
                 self._update_req = True
                 self._canvas.event_generate("<<LaunchFinished>>", when="now")
-            elif event.keysym == "F2":
+            elif event.keysym == "F6":
                 self._view_orientation = "NSEW"
                 self._update_req = True
                 self._canvas.event_generate("<<LaunchFinished>>", when="now")
-            elif event.keysym == "F3":
+            elif event.keysym == "F7":
                 self._view_orientation = "SNEW"
                 self._update_req = True
                 self._canvas.event_generate("<<LaunchFinished>>", when="now")
-            elif event.keysym == "F4":
+            elif event.keysym == "F8":
                 self._view_orientation = "SNWE"
                 self._update_req = True
                 self._canvas.event_generate("<<LaunchFinished>>", when="now")
